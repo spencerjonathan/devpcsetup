@@ -1,0 +1,39 @@
+---
+
+- hosts: localhost
+  tasks:
+  - name: Ensure Git is installed
+    apt:
+      name: git-all
+      state: present
+
+  - name: Configure GIT Email
+    command: git config --global user.email "spencer.jonathan@gmail.com"
+
+  - name: Configure GIT Name
+    command: git config --global user.name "Jon Spencer"
+
+  - name: Ensure Mvn is installed
+    apt:
+      name: maven
+      state: present 
+
+  - name: Ensure Eclipse is installed
+    apt:
+      name={{item}}
+      state=absent
+    with_items:
+      - eclipse
+      - eclipse-jdt
+      - eclipse-platform
+
+  - name: Ensure MYSQL is installed
+    apt:
+      name: mysql-server
+      state: present 
+
+  - name: Ensure Java8 is installed
+    apt:
+      name: openjdk-8-jre
+      state: present 
+
