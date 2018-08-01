@@ -18,6 +18,12 @@
       name: maven
       state: present 
 
+  # Needed for creating DB user
+  - name: Ensure Python-mysqldb is installed
+    apt:
+      name: python-mysqldb
+      state: present 
+
   - name: Ensure Eclipse is installed
     apt:
       name={{item}}
@@ -32,8 +38,66 @@
       name: mysql-server
       state: present 
 
-  - name: Ensure Java8 is installed
+  - name: Add dbuser
+    mysql_user:
+      name: joomla
+      password: 12345
+      priv: '*.*:ALL'
+      state: present
+
+  - name: Ensure apache2 is installed
     apt:
-      name: openjdk-8-jre
+      name: apache2
       state: present 
 
+  - name: Purge Java11
+    apt:
+      name: openjdk-11-jre
+      state: absent 
+      purge: yes 
+
+  - name: Ensure Java8 is installed
+    apt:
+      name: openjdk-8-jdk
+      state: present 
+
+  - name: Ensure Curl is installed
+    apt:
+      name: curl
+      state: present 
+
+  #- name: Ensure PHP is installed
+    #apt:
+      #name: php7.2
+      #state: present 
+
+  - name: Ensure PHP is installed
+    apt:
+      name={{item}}
+      state=present
+    with_items:
+      - php7.2
+      - php7.2-curl
+      - php7.2-mbstring
+
+  - name: Ensure PHP-Curl is removed
+    apt:
+      name: php7.0-curl
+      state: absent 
+
+  #- name: Ensure PHP-Curl is installed
+    #apt:
+      #name: php7.2-curl
+      #state: present 
+
+  - name: Install Codeception (PHP Testing)
+    get_url:
+      url: https://codeception.com/codecept.phar
+      dest: /usr/local/bin/codecept
+      mode: 0555
+
+  #- name: Install Codeception (PHP Testing)
+    #composer:
+      #command: require
+      #global_command: yes
+    #arguments: codeception/codeception
